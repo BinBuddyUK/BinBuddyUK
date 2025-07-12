@@ -2,108 +2,115 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>BinBuddy UK - Smart Waste Management</title>  <!-- Meta -->  <meta name="description" content="Smart bin collection reminders for UK households">
-  <meta name="theme-color" content="#5D5CDE">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-title" content="BinBuddy UK">  <!-- Tailwind CSS -->  <script src="https://cdn.tailwindcss.com"></script>  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            primary: '#5D5CDE',
-            'bin-general': '#4B5563',
-            'bin-recycling': '#10B981',
-            'bin-garden': '#F59E0B',
-            'bin-food': '#8B5CF6'
-          }
-        }
-      }
-    }
-  </script>  <!-- Manifest -->  <link rel="manifest" href="/manifest.json" />
-  <link rel="apple-touch-icon" href="/icon-192.png">
-</head>
-<body class="bg-white dark:bg-gray-900 min-h-screen">
+  <meta name="theme-color" content="#5D5CDE" />
+  <link rel="manifest" href="/manifest.json" />
+  <link rel="icon" href="/icon-192.png" type="image/png" />
+  <title>BinBuddy UK</title>
   <script>
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/service-worker.js')
-        .then(reg => console.log('Service Worker Registered:', reg))
-        .catch(err => console.error('Service Worker Error:', err));
-    }if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-  document.documentElement.classList.add('dark');
-}
-window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
-  if (event.matches) {
-    document.documentElement.classList.add('dark');
-  } else {
-    document.documentElement.classList.remove('dark');
-  }
-});
-
-  </script>  <!-- App Container -->  <div class="container mx-auto px-4 py-6 max-w-md">
-    <header class="text-center mb-8">
-      <h1 class="text-3xl font-bold text-primary">BinBuddy UK</h1>
-      <p class="text-gray-600 dark:text-gray-400">Your Collection Companion</p>
-    </header><!-- Tabs -->
-<nav class="mb-8">
-  <div class="flex bg-gray-100 dark:bg-gray-800 rounded-xl p-1.5 shadow-inner">
-    <button class="flex-1 py-3 px-4 text-sm font-semibold rounded-lg tab-btn active" onclick="showTab('schedule')">Schedule</button>
-    <button class="flex-1 py-3 px-4 text-sm font-semibold rounded-lg tab-btn" onclick="showTab('devices')">Devices</button>
-    <button class="flex-1 py-3 px-4 text-sm font-semibold rounded-lg tab-btn" onclick="showTab('settings')">Settings</button>
-    <button class="flex-1 py-3 px-4 text-sm font-semibold rounded-lg tab-btn" onclick="showTab('tips')">Tips</button>
-  </div>
-</nav>
-
-<!-- Tab Contents -->
-<div id="tab-schedule" class="tab-content">
-  <p class="text-gray-700 dark:text-gray-300">Schedule tab</p>
-</div>
-<div id="tab-devices" class="tab-content hidden">
-  <p class="text-gray-700 dark:text-gray-300">Devices tab</p>
-</div>
-<div id="tab-settings" class="tab-content hidden">
-  <p class="text-gray-700 dark:text-gray-300">Settings tab</p>
-</div>
-<div id="tab-tips" class="tab-content hidden">
-  <p class="text-gray-700 dark:text-gray-300">Tips & Tricks tab</p>
-</div>
-
-  </div>  <script>
-    function showTab(tabId) {
-      document.querySelectorAll('.tab-content').forEach(tab => tab.classList.add('hidden'));
-      document.getElementById(`tab-${tabId}`).classList.remove('hidden');
-
-      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('bg-white', 'dark:bg-gray-700'));
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/service-worker.js')
+          .then(reg => console.log("SW registered:", reg.scope))
+          .catch(err => console.log("SW registration failed:", err));
+      });
     }
-  </script>  <!-- Inline Service Worker (for demonstration only) -->  <script>
-    const CACHE_NAME = "binbuddy-cache-v1";
-    const urlsToCache = [
-      "/",
-      "/index.html",
-      "/manifest.json",
-      "/icon-192.png",
-      "/icon-512.png"
-    ];
+  </script>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-white dark:bg-gray-900 text-gray-900 dark:text-white font-sans">
+  <div class="p-4 text-center">
+    <h1 class="text-3xl font-bold text-purple-700">BinBuddy UK</h1>
+    <p class="text-sm text-gray-600 dark:text-gray-300">Your Collection Companion</p>
+  </div>  <div class="flex justify-around px-2 mb-4">
+    <button class="tab-btn px-4 py-2 bg-gray-100 dark:bg-gray-800 rounded" onclick="showTab('schedule')">Schedule</button>
+    <button class="tab-btn px-4 py-2 bg-gray-100 dark:bg-gray-800 rounded" onclick="showTab('devices')">Devices</button>
+    <button class="tab-btn px-4 py-2 bg-gray-100 dark:bg-gray-800 rounded" onclick="showTab('settings')">Settings</button>
+    <button class="tab-btn px-4 py-2 bg-gray-100 dark:bg-gray-800 rounded" onclick="showTab('tips')">Tips</button>
+  </div>  <div id="schedule" class="tab p-4">
+    <label class="block mb-2 font-semibold">Enter Your Postcode</label>
+    <input id="postcode" class="w-full p-2 mb-4 border rounded" placeholder="e.g. M1 1AA" />
+    <button onclick="getSchedule()" class="w-full bg-purple-600 text-white py-2 rounded">Get My Collection Schedule</button>
+    <div id="schedule-output" class="mt-4"></div>
+    <button onclick="exportToCalendar()" class="mt-4 bg-green-600 text-white px-4 py-2 rounded">Export to Calendar (.ics)</button>
+  </div>  <div id="devices" class="tab hidden p-4">
+    <p class="mb-4">Pair your BinBuddy Light:</p>
+    <button class="bg-blue-600 text-white px-4 py-2 rounded">Scan for Devices</button>
+    <p class="mt-4">Customize Bin Colors:</p>
+    <div class="space-y-2">
+      <label>General Waste: <input type="color" /></label><br />
+      <label>Recycling: <input type="color" /></label><br />
+      <label>Food Waste: <input type="color" /></label>
+    </div>
+  </div>  <div id="settings" class="tab hidden p-4">
+    <h2 class="font-semibold mb-2">Notifications</h2>
+    <label><input type="checkbox" /> Push Notifications</label><br />
+    <label><input type="checkbox" /> Email Notifications</label><br />
+    <label><input type="checkbox" /> SMS Alerts</label>
+    <h2 class="font-semibold mt-4 mb-2">Light Behavior</h2>
+    <label><input type="range" min="1" max="10" /> Brightness</label><br />
+    <label><input type="checkbox" /> Strobe Effect</label>
+  </div>  <div id="tips" class="tab hidden p-4">
+    <h2 class="font-semibold mb-2">Recycling Tips</h2>
+    <ul class="list-disc pl-5">
+      <li>Rinse containers before recycling</li>
+      <li>Flatten cardboard boxes</li>
+      <li>Check council website for rules</li>
+    </ul>
+    <p class="mt-2 text-sm text-gray-500">More council tips coming soon via RSS.</p>
+  </div>  <script>
+    function showTab(id) {
+      document.querySelectorAll('.tab').forEach(el => el.classList.add('hidden'));
+      document.getElementById(id).classList.remove('hidden');
+    }
 
-    self.addEventListener("install", (event) => {
-      event.waitUntil(
-        caches.open(CACHE_NAME).then((cache) => cache.addAll(urlsToCache))
-      );
-    });
+    async function getSchedule() {
+      const postcode = document.getElementById("postcode").value;
+      const output = document.getElementById("schedule-output");
+      output.innerHTML = "Loading...";
+      try {
+        const res = await fetch(`/api/bindata?postcode=${postcode}`);
+        const data = await res.json();
+        if (!data.success) throw new Error("Failed to fetch");
+        output.innerHTML = `
+          <p><strong>Council:</strong> ${data.council}</p>
+          <ul class="mt-2 list-disc pl-5">
+            ${data.bins.map(bin => `<li>${bin.type}: ${new Date(bin.collectionDate).toLocaleDateString()}</li>`).join('')}
+          </ul>
+        `;
+        window.currentSchedule = data.bins;
+      } catch (err) {
+        output.innerHTML = "Something went wrong. Try again later.";
+      }
+    }
 
-    self.addEventListener("fetch", (event) => {
-      event.respondWith(
-        caches.match(event.request).then((response) => response || fetch(event.request))
-      );
-    });
-
-    self.addEventListener("activate", (event) => {
-      event.waitUntil(
-        caches.keys().then((cacheNames) => {
-          return Promise.all(
-            cacheNames.filter((name) => name !== CACHE_NAME).map((name) => caches.delete(name))
-          );
-        })
-      );
-    });
+    function exportToCalendar() {
+      if (!window.currentSchedule) return alert("Please load a schedule first.");
+      const lines = [
+        "BEGIN:VCALENDAR",
+        "VERSION:2.0",
+        "PRODID:-//BinBuddyUK//EN"
+      ];
+      window.currentSchedule.forEach(bin => {
+        const date = new Date(bin.collectionDate);
+        const dt = date.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+        lines.push(
+          "BEGIN:VEVENT",
+          `SUMMARY:${bin.type} Collection`,
+          `DTSTART:${dt}`,
+          `DTEND:${dt}`,
+          `DESCRIPTION:Take out your ${bin.type} bin`,
+          "END:VEVENT"
+        );
+      });
+      lines.push("END:VCALENDAR");
+      const blob = new Blob([lines.join("\n")], { type: "text/calendar" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "binbuddy-schedule.ics";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
   </script></body>
 </html>
