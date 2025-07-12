@@ -1,13 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>BinBuddy UK - Smart Waste Management</title>
-  <meta name="description" content="Smart bin collection reminders for UK households"/>
+  <title>BinBuddy UK - Premium</title>
   <meta name="theme-color" content="#5D5CDE"/>
-  <meta name="apple-mobile-web-app-capable" content="yes"/>
-  <meta name="apple-mobile-web-app-title" content="BinBuddy UK"/>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -15,173 +12,150 @@
         extend: {
           colors: {
             primary: '#5D5CDE',
-            'bin-general': '#4B5563',
-            'bin-recycling': '#10B981',
-            'bin-garden': '#F59E0B',
-            'bin-food': '#8B5CF6'
+            accent: '#8B5CF6',
+            dark: '#111827',
+            soft: '#F3F4F6'
+          },
+          boxShadow: {
+            glow: '0 0 20px rgba(93, 92, 222, 0.5)'
           }
         }
       }
-    }
+    };
   </script>
 </head>
+<body class="bg-dark text-white min-h-screen font-sans">
 
-<body class="bg-white dark:bg-gray-900 min-h-screen">
-  <script>
-    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-      document.documentElement.classList.add('dark');
-    }
-    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
-      if (event.matches) {
-        document.documentElement.classList.add('dark');
-      } else {
-        document.documentElement.classList.remove('dark');
-      }
-    });
-  </script>
-
-  <div class="container mx-auto px-4 py-6 max-w-md">
-    <!-- Header -->
-    <header class="text-center mb-8">
-      <div class="flex items-center justify-center mb-4">
-        <div class="w-16 h-16 bg-gradient-to-br from-primary to-purple-600 rounded-2xl flex items-center justify-center mr-4 shadow-lg">
-          <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-          </svg>
-        </div>
-        <div>
-          <h1 class="text-3xl font-bold bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
-            BinBuddy UK
-          </h1>
-          <p class="text-gray-600 dark:text-gray-400 font-medium">Your Collection Companion</p>
-        </div>
-      </div>
-    </header>
-
-    <!-- Data Source Indicator -->
-    <div id="dataSource" class="hidden mb-4 p-3 rounded-lg text-center">
-      <div class="flex items-center justify-center">
-        <div id="dataSourceIcon" class="w-3 h-3 rounded-full mr-2"></div>
-        <span id="dataSourceText" class="text-sm font-medium"></span>
+  <!-- Header -->
+  <header class="text-center p-6 bg-gradient-to-br from-primary to-accent shadow-md">
+    <div class="flex justify-center items-center mb-3">
+      <div class="w-12 h-12 bg-white/20 rounded-xl flex justify-center items-center shadow-glow">
+        <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14 2 9.27l6.91-1.01L12 2z"/>
+        </svg>
       </div>
     </div>
+    <h1 class="text-3xl font-bold bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent">BinBuddy UK</h1>
+    <p class="text-sm text-white/80">Your Smart Waste Collection Companion</p>
+  </header>
 
-    <!-- Location Setup -->
-    <div id="locationSetup" class="mb-6">
-      <div class="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 rounded-2xl p-6 shadow-lg mb-6">
-        <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-4 text-center">Find Your Collection Schedule</h2>
-        <div class="space-y-5">
-          <div>
-            <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">Enter Your Postcode</label>
-            <div class="relative">
-              <input type="text" id="postcodeInput" placeholder="e.g. M1 1AA, B1 1BB, LS1 1AB..."
-                class="w-full px-5 py-4 text-base border-2 border-gray-200 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-primary transition-all"/>
-            </div>
-          </div>
-          <button id="findCouncilBtn"
-            class="w-full bg-gradient-to-r from-primary to-purple-600 text-white py-4 rounded-xl font-semibold hover:from-purple-600 hover:to-primary transition-all duration-200 shadow-lg transform hover:scale-[1.02]">
-            Get My Collection Schedule
-          </button>
+  <!-- Tabs -->
+  <nav class="sticky top-0 bg-dark border-t border-white/10 flex justify-around py-2 text-sm">
+    <button class="tab-btn text-white font-semibold" onclick="showTab('schedule')">Schedule</button>
+    <button class="tab-btn text-white/70" onclick="showTab('device')">Devices</button>
+    <button class="tab-btn text-white/70" onclick="showTab('settings')">Settings</button>
+    <button class="tab-btn text-white/70" onclick="showTab('tips')">Tips</button>
+  </nav>
+
+  <!-- Content Container -->
+  <main class="p-4 space-y-6">
+
+    <!-- Schedule -->
+    <section id="tab-schedule" class="tab-content">
+      <h2 class="text-xl font-bold mb-3">Collection Schedule</h2>
+      <input id="postcodeInput" type="text" placeholder="Enter your postcode..." class="w-full p-3 rounded-xl bg-soft text-gray-900 mb-4"/>
+      <button id="findCouncilBtn" class="w-full bg-primary hover:bg-accent py-3 rounded-xl font-semibold shadow-glow transition">Get Schedule</button>
+
+      <div id="scheduleDisplay" class="hidden mt-6 bg-white/10 rounded-xl p-4">
+        <p class="text-sm mb-2 text-white/70" id="councilName"></p>
+        <div id="nextCollection" class="text-sm space-y-2"></div>
+        <div class="flex gap-3 mt-4">
+          <button onclick="reportMissedCollection()" class="flex-1 bg-white/20 hover:bg-white/30 py-2 rounded-xl">Report Miss</button>
+          <button onclick="importToCalendar()" class="flex-1 bg-white/20 hover:bg-white/30 py-2 rounded-xl">Add to Calendar</button>
         </div>
       </div>
-    </div>
+    </section>
 
-    <!-- Collection Schedule -->
-    <div id="scheduleDisplay" class="hidden">
-      <div class="flex items-center justify-between mb-4">
-        <h2 class="text-xl font-bold text-gray-900 dark:text-white">Collection Schedule</h2>
-        <span id="councilName" class="text-sm text-gray-600 dark:text-gray-400 font-medium"></span>
+    <!-- Devices -->
+    <section id="tab-device" class="tab-content hidden">
+      <h2 class="text-xl font-bold mb-3">Your Bin Light</h2>
+      <button onclick="scanBluetooth()" class="w-full bg-accent hover:bg-primary py-3 rounded-xl font-semibold shadow-glow transition">Scan for Devices</button>
+      <p class="mt-4 text-sm text-white/70">Customize bin colors below:</p>
+      <div class="grid grid-cols-2 gap-4 mt-3 text-sm">
+        <div>General <input type="color" class="w-8 h-8 rounded-full"/></div>
+        <div>Recycling <input type="color" class="w-8 h-8 rounded-full"/></div>
+        <div>Food <input type="color" class="w-8 h-8 rounded-full"/></div>
+        <div>Garden <input type="color" class="w-8 h-8 rounded-full"/></div>
       </div>
+    </section>
 
-      <div class="bg-gradient-to-br from-primary to-purple-600 rounded-2xl p-6 text-white mb-6 shadow-lg">
-        <div class="flex items-center justify-between mb-4">
-          <h3 class="text-xl font-bold">Next Collection</h3>
-        </div>
-        <div id="nextCollection" class="space-y-3 mb-4"></div>
-        <div class="flex space-x-3">
-          <button id="setReminderBtn" class="flex-1 bg-white/20 hover:bg-white/30 py-3 px-4 rounded-xl text-sm font-semibold transition-all">
-            Set Reminder
-          </button>
-          <button id="markCollectedBtn" class="flex-1 bg-white/20 hover:bg-white/30 py-3 px-4 rounded-xl text-sm font-semibold transition-all">
-            Mark Collected
-          </button>
-        </div>
-      </div>
-
-      <!-- Weekly Schedule -->
+    <!-- Settings -->
+    <section id="tab-settings" class="tab-content hidden">
+      <h2 class="text-xl font-bold mb-3">Settings</h2>
       <div class="space-y-4">
-        <h3 class="text-xl font-bold text-gray-900 dark:text-white">This Week</h3>
-        <div id="weeklySchedule" class="space-y-3"></div>
+        <div class="flex justify-between items-center">
+          <span>Push Notifications</span>
+          <input type="checkbox"/>
+        </div>
+        <div class="flex justify-between items-center">
+          <span>Email Alerts</span>
+          <input type="checkbox"/>
+        </div>
+        <div class="flex justify-between items-center">
+          <span>Light Mode: Pulse</span>
+          <input type="checkbox"/>
+        </div>
       </div>
-    </div>
-  </div>
+    </section>
 
-  <!-- SCRIPT SECTION -->
+    <!-- Tips -->
+    <section id="tab-tips" class="tab-content hidden">
+      <h2 class="text-xl font-bold mb-3">Recycling Tips & News</h2>
+      <ul class="list-disc ml-5 space-y-2 text-sm text-white/80">
+        <li>Always rinse containers before placing in recycling.</li>
+        <li>Do not bag recyclables. Use open bins.</li>
+        <li>Check council updates for holiday collection changes.</li>
+        <li>Live council feed integration coming soon.</li>
+      </ul>
+    </section>
+
+  </main>
+
   <script>
-    document.getElementById('findCouncilBtn').addEventListener('click', async () => {
-      const postcodeInput = document.getElementById('postcodeInput');
-      const postcode = postcodeInput.value.trim();
+    function showTab(tab) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+      document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('text-white', 'font-semibold'));
+      document.getElementById('tab-' + tab).classList.remove('hidden');
+      event.target.classList.add('text-white', 'font-semibold');
+    }
 
-      if (!postcode) {
-        alert('Please enter your postcode.');
-        return;
-      }
+    document.getElementById('findCouncilBtn').addEventListener('click', async () => {
+      const postcode = document.getElementById('postcodeInput').value.trim();
+      if (!postcode) return alert('Please enter your postcode.');
 
       try {
-        const response = await fetch(`/api/bindata?postcode=${encodeURIComponent(postcode)}`);
-        const data = await response.json();
+        const res = await fetch(`/api/bindata?postcode=${encodeURIComponent(postcode)}`);
+        const data = await res.json();
 
         if (data.success) {
-          document.getElementById('locationSetup').classList.add('hidden');
           document.getElementById('scheduleDisplay').classList.remove('hidden');
-
           document.getElementById('councilName').textContent = data.council;
-
-          const indicator = document.getElementById('dataSource');
-          const icon = document.getElementById('dataSourceIcon');
-          const text = document.getElementById('dataSourceText');
-
-          indicator.classList.remove('hidden');
-          icon.className = "w-3 h-3 rounded-full mr-2 " + (data.source === 'live' ? 'bg-green-500' : 'bg-yellow-500');
-          text.textContent = data.source === 'live' ? 'Live Council Data' : 'Fallback Data';
-
-          const nextCollection = document.getElementById('nextCollection');
-          nextCollection.innerHTML = '';
-
+          const container = document.getElementById('nextCollection');
+          container.innerHTML = '';
           data.bins.forEach(bin => {
-            const div = document.createElement('div');
-            div.className = "flex justify-between border-b border-white/30 py-2 text-sm";
-            div.innerHTML = `
-              <span>${bin.type}</span>
-              <span>${new Date(bin.collectionDate).toLocaleDateString('en-UK', {
-                weekday: 'short', month: 'short', day: 'numeric'
-              })}</span>
-            `;
-            nextCollection.appendChild(div);
+            container.innerHTML += `<div class="flex justify-between"><span>${bin.type}</span><span>${new Date(bin.collectionDate).toLocaleDateString()}</span></div>`;
           });
-
-          const weekly = document.getElementById('weeklySchedule');
-          if (weekly) {
-            weekly.innerHTML = '';
-            data.bins.forEach(bin => {
-              const div = document.createElement('div');
-              div.className = "flex justify-between text-sm text-gray-700 dark:text-gray-300";
-              div.innerHTML = `
-                <span>${bin.type}</span>
-                <span>${bin.nextCollection}</span>
-              `;
-              weekly.appendChild(div);
-            });
-          }
-
         } else {
-          alert('Sorry, no bin data found for that postcode.');
+          alert('No data found for that postcode.');
         }
       } catch (err) {
-        console.error('Error fetching bin data:', err);
-        alert('Something went wrong. Please try again later.');
+        console.error(err);
+        alert('Failed to retrieve data.');
       }
     });
+
+    function reportMissedCollection() {
+      const mailto = `mailto:localcouncil@example.com?subject=Missed Bin Collection&body=I missed my bin collection today. Please advise.`;
+      window.location.href = mailto;
+    }
+
+    function importToCalendar() {
+      alert("Calendar sync coming soon.");
+    }
+
+    function scanBluetooth() {
+      alert("Bluetooth device scan placeholder.");
+    }
   </script>
 </body>
 </html>
