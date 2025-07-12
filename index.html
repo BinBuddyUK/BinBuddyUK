@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>BinBuddy UK - Premium</title>
   <meta name="theme-color" content="#5D5CDE"/>
+
+  <!-- TailwindCSS -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -23,7 +25,12 @@
       }
     };
   </script>
+
+  <!-- ✅ PWA Support -->
+  <link rel="manifest" href="/manifest.json" />
+  <link rel="apple-touch-icon" href="/icon-192.png" />
 </head>
+
 <body class="bg-dark text-white min-h-screen font-sans">
 
   <!-- Header -->
@@ -47,10 +54,10 @@
     <button class="tab-btn text-white/70" onclick="showTab('tips')">Tips</button>
   </nav>
 
-  <!-- Content Container -->
+  <!-- Main -->
   <main class="p-4 space-y-6">
 
-    <!-- Schedule -->
+    <!-- Schedule Tab -->
     <section id="tab-schedule" class="tab-content">
       <h2 class="text-xl font-bold mb-3">Collection Schedule</h2>
       <input id="postcodeInput" type="text" placeholder="Enter your postcode..." class="w-full p-3 rounded-xl bg-soft text-gray-900 mb-4"/>
@@ -66,7 +73,7 @@
       </div>
     </section>
 
-    <!-- Devices -->
+    <!-- Devices Tab -->
     <section id="tab-device" class="tab-content hidden">
       <h2 class="text-xl font-bold mb-3">Your Bin Light</h2>
       <button onclick="scanBluetooth()" class="w-full bg-accent hover:bg-primary py-3 rounded-xl font-semibold shadow-glow transition">Scan for Devices</button>
@@ -79,7 +86,7 @@
       </div>
     </section>
 
-    <!-- Settings -->
+    <!-- Settings Tab -->
     <section id="tab-settings" class="tab-content hidden">
       <h2 class="text-xl font-bold mb-3">Settings</h2>
       <div class="space-y-4">
@@ -98,7 +105,7 @@
       </div>
     </section>
 
-    <!-- Tips -->
+    <!-- Tips Tab -->
     <section id="tab-tips" class="tab-content hidden">
       <h2 class="text-xl font-bold mb-3">Recycling Tips & News</h2>
       <ul class="list-disc ml-5 space-y-2 text-sm text-white/80">
@@ -111,6 +118,7 @@
 
   </main>
 
+  <!-- Scripts -->
   <script>
     function showTab(tab) {
       document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
@@ -155,6 +163,17 @@
 
     function scanBluetooth() {
       alert("Bluetooth device scan placeholder.");
+    }
+  </script>
+
+  <!-- ✅ PWA Service Worker -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/service-worker.js')
+          .then(reg => console.log('✅ Service Worker registered', reg))
+          .catch(err => console.error('❌ Service Worker error', err));
+      });
     }
   </script>
 </body>
