@@ -1,180 +1,109 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>BinBuddy UK - Premium</title>
-  <meta name="theme-color" content="#5D5CDE"/>
-
-  <!-- TailwindCSS -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BinBuddy UK - Smart Waste Management</title>  <!-- Meta -->  <meta name="description" content="Smart bin collection reminders for UK households">
+  <meta name="theme-color" content="#5D5CDE">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="BinBuddy UK">  <!-- Tailwind CSS -->  <script src="https://cdn.tailwindcss.com"></script>  <script>
     tailwind.config = {
       theme: {
         extend: {
           colors: {
             primary: '#5D5CDE',
-            accent: '#8B5CF6',
-            dark: '#111827',
-            soft: '#F3F4F6'
-          },
-          boxShadow: {
-            glow: '0 0 20px rgba(93, 92, 222, 0.5)'
+            'bin-general': '#4B5563',
+            'bin-recycling': '#10B981',
+            'bin-garden': '#F59E0B',
+            'bin-food': '#8B5CF6'
           }
         }
       }
-    };
-  </script>
-
-  <!-- ✅ PWA Support -->
-  <link rel="manifest" href="/manifest.json" />
-  <link rel="apple-touch-icon" href="/icon-192.png" />
+    }
+  </script>  <!-- Manifest -->  <link rel="manifest" href="/manifest.json" />
+  <link rel="apple-touch-icon" href="/icon-192.png">
 </head>
-
-<body class="bg-dark text-white min-h-screen font-sans">
-
-  <!-- Header -->
-  <header class="text-center p-6 bg-gradient-to-br from-primary to-accent shadow-md">
-    <div class="flex justify-center items-center mb-3">
-      <div class="w-12 h-12 bg-white/20 rounded-xl flex justify-center items-center shadow-glow">
-        <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
-          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14 2 9.27l6.91-1.01L12 2z"/>
-        </svg>
-      </div>
-    </div>
-    <h1 class="text-3xl font-bold bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent">BinBuddy UK</h1>
-    <p class="text-sm text-white/80">Your Smart Waste Collection Companion</p>
-  </header>
-
-  <!-- Tabs -->
-  <nav class="sticky top-0 bg-dark border-t border-white/10 flex justify-around py-2 text-sm">
-    <button class="tab-btn text-white font-semibold" onclick="showTab('schedule')">Schedule</button>
-    <button class="tab-btn text-white/70" onclick="showTab('device')">Devices</button>
-    <button class="tab-btn text-white/70" onclick="showTab('settings')">Settings</button>
-    <button class="tab-btn text-white/70" onclick="showTab('tips')">Tips</button>
-  </nav>
-
-  <!-- Main -->
-  <main class="p-4 space-y-6">
-
-    <!-- Schedule Tab -->
-    <section id="tab-schedule" class="tab-content">
-      <h2 class="text-xl font-bold mb-3">Collection Schedule</h2>
-      <input id="postcodeInput" type="text" placeholder="Enter your postcode..." class="w-full p-3 rounded-xl bg-soft text-gray-900 mb-4"/>
-      <button id="findCouncilBtn" class="w-full bg-primary hover:bg-accent py-3 rounded-xl font-semibold shadow-glow transition">Get Schedule</button>
-
-      <div id="scheduleDisplay" class="hidden mt-6 bg-white/10 rounded-xl p-4">
-        <p class="text-sm mb-2 text-white/70" id="councilName"></p>
-        <div id="nextCollection" class="text-sm space-y-2"></div>
-        <div class="flex gap-3 mt-4">
-          <button onclick="reportMissedCollection()" class="flex-1 bg-white/20 hover:bg-white/30 py-2 rounded-xl">Report Miss</button>
-          <button onclick="importToCalendar()" class="flex-1 bg-white/20 hover:bg-white/30 py-2 rounded-xl">Add to Calendar</button>
-        </div>
-      </div>
-    </section>
-
-    <!-- Devices Tab -->
-    <section id="tab-device" class="tab-content hidden">
-      <h2 class="text-xl font-bold mb-3">Your Bin Light</h2>
-      <button onclick="scanBluetooth()" class="w-full bg-accent hover:bg-primary py-3 rounded-xl font-semibold shadow-glow transition">Scan for Devices</button>
-      <p class="mt-4 text-sm text-white/70">Customize bin colors below:</p>
-      <div class="grid grid-cols-2 gap-4 mt-3 text-sm">
-        <div>General <input type="color" class="w-8 h-8 rounded-full"/></div>
-        <div>Recycling <input type="color" class="w-8 h-8 rounded-full"/></div>
-        <div>Food <input type="color" class="w-8 h-8 rounded-full"/></div>
-        <div>Garden <input type="color" class="w-8 h-8 rounded-full"/></div>
-      </div>
-    </section>
-
-    <!-- Settings Tab -->
-    <section id="tab-settings" class="tab-content hidden">
-      <h2 class="text-xl font-bold mb-3">Settings</h2>
-      <div class="space-y-4">
-        <div class="flex justify-between items-center">
-          <span>Push Notifications</span>
-          <input type="checkbox"/>
-        </div>
-        <div class="flex justify-between items-center">
-          <span>Email Alerts</span>
-          <input type="checkbox"/>
-        </div>
-        <div class="flex justify-between items-center">
-          <span>Light Mode: Pulse</span>
-          <input type="checkbox"/>
-        </div>
-      </div>
-    </section>
-
-    <!-- Tips Tab -->
-    <section id="tab-tips" class="tab-content hidden">
-      <h2 class="text-xl font-bold mb-3">Recycling Tips & News</h2>
-      <ul class="list-disc ml-5 space-y-2 text-sm text-white/80">
-        <li>Always rinse containers before placing in recycling.</li>
-        <li>Do not bag recyclables. Use open bins.</li>
-        <li>Check council updates for holiday collection changes.</li>
-        <li>Live council feed integration coming soon.</li>
-      </ul>
-    </section>
-
-  </main>
-
-  <!-- Scripts -->
-  <script>
-    function showTab(tab) {
-      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-      document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('text-white', 'font-semibold'));
-      document.getElementById('tab-' + tab).classList.remove('hidden');
-      event.target.classList.add('text-white', 'font-semibold');
-    }
-
-    document.getElementById('findCouncilBtn').addEventListener('click', async () => {
-      const postcode = document.getElementById('postcodeInput').value.trim();
-      if (!postcode) return alert('Please enter your postcode.');
-
-      try {
-        const res = await fetch(`/api/bindata?postcode=${encodeURIComponent(postcode)}`);
-        const data = await res.json();
-
-        if (data.success) {
-          document.getElementById('scheduleDisplay').classList.remove('hidden');
-          document.getElementById('councilName').textContent = data.council;
-          const container = document.getElementById('nextCollection');
-          container.innerHTML = '';
-          data.bins.forEach(bin => {
-            container.innerHTML += `<div class="flex justify-between"><span>${bin.type}</span><span>${new Date(bin.collectionDate).toLocaleDateString()}</span></div>`;
-          });
-        } else {
-          alert('No data found for that postcode.');
-        }
-      } catch (err) {
-        console.error(err);
-        alert('Failed to retrieve data.');
-      }
-    });
-
-    function reportMissedCollection() {
-      const mailto = `mailto:localcouncil@example.com?subject=Missed Bin Collection&body=I missed my bin collection today. Please advise.`;
-      window.location.href = mailto;
-    }
-
-    function importToCalendar() {
-      alert("Calendar sync coming soon.");
-    }
-
-    function scanBluetooth() {
-      alert("Bluetooth device scan placeholder.");
-    }
-  </script>
-
-  <!-- ✅ PWA Service Worker -->
+<body class="bg-white dark:bg-gray-900 min-h-screen">
   <script>
     if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/service-worker.js')
-          .then(reg => console.log('✅ Service Worker registered', reg))
-          .catch(err => console.error('❌ Service Worker error', err));
-      });
+      navigator.serviceWorker.register('/service-worker.js')
+        .then(reg => console.log('Service Worker Registered:', reg))
+        .catch(err => console.error('Service Worker Error:', err));
+    }if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+  document.documentElement.classList.add('dark');
+}
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+  if (event.matches) {
+    document.documentElement.classList.add('dark');
+  } else {
+    document.documentElement.classList.remove('dark');
+  }
+});
+
+  </script>  <!-- App Container -->  <div class="container mx-auto px-4 py-6 max-w-md">
+    <header class="text-center mb-8">
+      <h1 class="text-3xl font-bold text-primary">BinBuddy UK</h1>
+      <p class="text-gray-600 dark:text-gray-400">Your Collection Companion</p>
+    </header><!-- Tabs -->
+<nav class="mb-8">
+  <div class="flex bg-gray-100 dark:bg-gray-800 rounded-xl p-1.5 shadow-inner">
+    <button class="flex-1 py-3 px-4 text-sm font-semibold rounded-lg tab-btn active" onclick="showTab('schedule')">Schedule</button>
+    <button class="flex-1 py-3 px-4 text-sm font-semibold rounded-lg tab-btn" onclick="showTab('devices')">Devices</button>
+    <button class="flex-1 py-3 px-4 text-sm font-semibold rounded-lg tab-btn" onclick="showTab('settings')">Settings</button>
+    <button class="flex-1 py-3 px-4 text-sm font-semibold rounded-lg tab-btn" onclick="showTab('tips')">Tips</button>
+  </div>
+</nav>
+
+<!-- Tab Contents -->
+<div id="tab-schedule" class="tab-content">
+  <p class="text-gray-700 dark:text-gray-300">Schedule tab</p>
+</div>
+<div id="tab-devices" class="tab-content hidden">
+  <p class="text-gray-700 dark:text-gray-300">Devices tab</p>
+</div>
+<div id="tab-settings" class="tab-content hidden">
+  <p class="text-gray-700 dark:text-gray-300">Settings tab</p>
+</div>
+<div id="tab-tips" class="tab-content hidden">
+  <p class="text-gray-700 dark:text-gray-300">Tips & Tricks tab</p>
+</div>
+
+  </div>  <script>
+    function showTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(tab => tab.classList.add('hidden'));
+      document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('bg-white', 'dark:bg-gray-700'));
     }
-  </script>
-</body>
+  </script>  <!-- Inline Service Worker (for demonstration only) -->  <script>
+    const CACHE_NAME = "binbuddy-cache-v1";
+    const urlsToCache = [
+      "/",
+      "/index.html",
+      "/manifest.json",
+      "/icon-192.png",
+      "/icon-512.png"
+    ];
+
+    self.addEventListener("install", (event) => {
+      event.waitUntil(
+        caches.open(CACHE_NAME).then((cache) => cache.addAll(urlsToCache))
+      );
+    });
+
+    self.addEventListener("fetch", (event) => {
+      event.respondWith(
+        caches.match(event.request).then((response) => response || fetch(event.request))
+      );
+    });
+
+    self.addEventListener("activate", (event) => {
+      event.waitUntil(
+        caches.keys().then((cacheNames) => {
+          return Promise.all(
+            cacheNames.filter((name) => name !== CACHE_NAME).map((name) => caches.delete(name))
+          );
+        })
+      );
+    });
+  </script></body>
 </html>
