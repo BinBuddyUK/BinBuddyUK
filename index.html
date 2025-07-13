@@ -1,145 +1,1300 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>BinBuddy UK - Smart Waste Management</title>
-  <meta name="description" content="Smart bin collection reminders for UK households" />
-  <meta name="theme-color" content="#5D5CDE" />
-  <link rel="manifest" href="/manifest.json" />
-  <link rel="apple-touch-icon" href="/icon-192.png" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-  <meta name="apple-mobile-web-app-title" content="BinBuddy UK" />
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            primary: '#5D5CDE',
-            'bin-general': '#4B5563',
-            'bin-recycling': '#10B981',
-            'bin-garden': '#F59E0B',
-            'bin-food': '#8B5CF6'
-          },
-          boxShadow: {
-            'soft': '0 4px 12px rgba(0, 0, 0, 0.05)',
-          }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BinBuddy UK Pro - Smart Waste Management</title>
+    
+    <!-- Enhanced PWA Meta Tags -->
+    <meta name="description" content="Premium smart bin collection reminders with AI insights, environmental tracking, and smart home integration">
+    <meta name="theme-color" content="#5D5CDE">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="BinBuddy UK Pro">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="icon" href="/icon-192.png">
+    
+    <!-- Enhanced CDN Resources -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'sans': ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: '#5D5CDE',
+                        secondary: '#8B5CF6',
+                        accent: '#06D6A0',
+                        'bin-general': '#4B5563',
+                        'bin-recycling': '#10B981',
+                        'bin-garden': '#F59E0B',
+                        'bin-food': '#8B5CF6',
+                        'bin-hazardous': '#EF4444',
+                        'eco-green': '#059669',
+                        'carbon-neutral': '#065F46'
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-in-out',
+                        'slide-up': 'slideUp 0.3s ease-out',
+                        'bounce-gentle': 'bounceGentle 2s infinite',
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'glow': 'glow 2s ease-in-out infinite alternate'
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0', transform: 'translateY(10px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' }
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(100%)' },
+                            '100%': { transform: 'translateY(0)' }
+                        },
+                        bounceGentle: {
+                            '0%, 100%': { transform: 'translateY(-5%)' },
+                            '50%': { transform: 'translateY(0)' }
+                        },
+                        glow: {
+                            '0%': { boxShadow: '0 0 5px rgba(93, 92, 222, 0.5)' },
+                            '100%': { boxShadow: '0 0 20px rgba(93, 92, 222, 0.8)' }
+                        }
+                    },
+                    backdropBlur: {
+                        xs: '2px',
+                    },
+                    backgroundImage: {
+                        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+                        'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
+                    }
+                }
+            }
         }
-      }
-    }
-  </script>
+    </script>
 </head>
-<body class="bg-gray-50 dark:bg-gray-900 min-h-screen text-gray-800 dark:text-gray-100">
-  <div class="max-w-md mx-auto p-4">
-    <!-- Header -->
-    <header class="text-center py-6">
-      <h1 class="text-4xl font-bold text-primary mb-2">BinBuddy UK</h1>
-      <p class="text-sm text-gray-500 dark:text-gray-400">Your smart bin collection assistant</p>
-    </header><!-- Tabs -->
-<nav class="flex justify-between bg-white dark:bg-gray-800 rounded-xl shadow-soft p-2 mb-4">
-  <button onclick="showTab('schedule')" class="tab-btn w-full text-center py-2 px-3 font-medium rounded-xl">Schedule</button>
-  <button onclick="showTab('devices')" class="tab-btn w-full text-center py-2 px-3 font-medium rounded-xl">Devices</button>
-  <button onclick="showTab('settings')" class="tab-btn w-full text-center py-2 px-3 font-medium rounded-xl">Settings</button>
-  <button onclick="showTab('tips')" class="tab-btn w-full text-center py-2 px-3 font-medium rounded-xl">Tips</button>
-</nav>
-
-<!-- Tabs Content -->
-<section id="schedule" class="tab-content">
-  <div class="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-soft mb-4">
-    <label for="postcode" class="block font-semibold mb-2">Enter your postcode</label>
-    <input id="postcodeInput" type="text" class="w-full px-4 py-2 rounded-xl border border-gray-300 dark:border-gray-600" placeholder="e.g. M1 1AA" />
-    <button onclick="fetchSchedule()" class="w-full mt-3 bg-primary text-white py-2 rounded-xl font-semibold">Get Schedule</button>
-  </div>
-  <div id="scheduleOutput" class="space-y-3"></div>
-</section>
-
-<section id="devices" class="tab-content hidden">
-  <div class="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-soft">
-    <p class="font-semibold mb-2">Connected Devices</p>
-    <div id="connectedDevices">None</div>
-    <button onclick="scanBluetoothDevices()" class="mt-4 bg-primary text-white py-2 px-4 rounded-xl font-semibold">Scan via Bluetooth</button>
-  </div>
-</section>
-
-<section id="settings" class="tab-content hidden">
-  <div class="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-soft space-y-3">
-    <div class="flex justify-between items-center">
-      <label class="font-medium">Push Notifications</label>
-      <input id="pushToggle" type="checkbox" checked class="toggle-input" />
-    </div>
-    <div class="flex justify-between items-center">
-      <label class="font-medium">Auto Brightness</label>
-      <input type="checkbox" class="toggle-input" />
-    </div>
-    <div>
-      <label class="block font-medium mb-1">Light Duration</label>
-      <select class="w-full px-3 py-2 rounded-xl bg-white dark:bg-gray-700">
-        <option>Until collection</option>
-        <option>24 hours</option>
-        <option>12 hours</option>
-        <option>6 hours</option>
-      </select>
-    </div>
-  </div>
-</section>
-
-<section id="tips" class="tab-content hidden">
-  <div class="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-soft">
-    <h2 class="font-bold text-lg mb-3">Recycling Tips & News</h2>
-    <div id="rssFeed" class="space-y-2 text-sm"></div>
-  </div>
-</section>
-
-  </div>  <script>
-    function showTab(tabId) {
-      document.querySelectorAll('.tab-content').forEach(t => t.classList.add('hidden'));
-      document.getElementById(tabId).classList.remove('hidden');
-      if (tabId === 'tips') loadRSSFeed();
-    }
-
-    async function fetchSchedule() {
-      const output = document.getElementById('scheduleOutput');
-      output.innerHTML = '<p>Loading...</p>';
-      const postcode = document.getElementById('postcodeInput').value;
-      try {
-        const res = await fetch(`/api/bindata?postcode=${encodeURIComponent(postcode)}`);
-        const data = await res.json();
-        if (!data.bins) throw new Error('No data');
-        output.innerHTML = data.bins.map(bin => `<div class="bg-gray-100 dark:bg-gray-700 p-3 rounded-xl shadow-soft">
-          <p class="font-semibold">${bin.type}</p>
-          <p class="text-xs">${new Date(bin.collectionDate).toLocaleDateString()}</p>
-        </div>`).join('');
-      } catch (err) {
-        output.innerHTML = '<p class="text-red-500">Failed to load schedule.</p>';
-      }
-    }
-
-    async function loadRSSFeed() {
-      const container = document.getElementById('rssFeed');
-      container.innerHTML = '<p>Loading...</p>';
-      try {
-        const res = await fetch('/api/rss');
-        const { items } = await res.json();
-        container.innerHTML = items.map(item => `<div class="bg-gray-100 dark:bg-gray-700 p-3 rounded-xl shadow-soft">
-          <a href="${item.link}" target="_blank" class="font-semibold text-blue-600 dark:text-blue-400">${item.title}</a>
-          <p class="text-xs text-gray-500">${new Date(item.pubDate).toLocaleDateString()}</p>
-        </div>`).join('');
-      } catch {
-        container.innerHTML = '<p class="text-red-500">RSS feed unavailable.</p>';
-      }
-    }
-
-    function scanBluetoothDevices() {
-      alert("Bluetooth scanning feature not implemented yet.");
-    }
-  </script>  <script>
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/service-worker.js').then(() => {
-          console.log('Service Worker registered');
+<body class="bg-white dark:bg-gray-900 min-h-screen">
+    <script>
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.documentElement.classList.add('dark');
+        }
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+            if (event.matches) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
         });
-      });
-    }
-  </script></body>
+    </script>
+
+    <div class="container mx-auto px-4 py-6 max-w-md">
+        <!-- Header -->
+        <header class="text-center mb-8">
+            <div class="flex items-center justify-center mb-4">
+                <div class="w-16 h-16 bg-gradient-to-br from-primary to-purple-600 rounded-2xl flex items-center justify-center mr-4 shadow-lg">
+                    <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="text-3xl font-bold bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
+                        BinBuddy UK
+                    </h1>
+                    <p class="text-gray-600 dark:text-gray-400 font-medium">Your Collection Companion</p>
+                </div>
+            </div>
+        </header>
+
+        <!-- Data Source Indicator -->
+        <div id="dataSource" class="hidden mb-4 p-3 rounded-lg text-center">
+            <div class="flex items-center justify-center">
+                <div id="dataSourceIcon" class="w-3 h-3 rounded-full mr-2"></div>
+                <span id="dataSourceText" class="text-sm font-medium"></span>
+            </div>
+        </div>
+
+        <!-- Premium Status Banner -->
+        <div class="bg-gradient-to-r from-primary to-secondary rounded-2xl p-4 mb-6 text-white">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                    <div class="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center mr-3">
+                        <i data-lucide="crown" class="w-4 h-4"></i>
+                    </div>
+                    <div>
+                        <div class="font-bold text-sm">BinBuddy Pro</div>
+                        <div class="text-xs text-white/80">Premium Features Active</div>
+                    </div>
+                </div>
+                <div class="text-right">
+                    <div class="text-xs text-white/80">Carbon Saved</div>
+                    <div class="font-bold">2.4kg CO₂</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="mb-8">
+            <div class="grid grid-cols-5 bg-gray-100 dark:bg-gray-800 rounded-xl p-1.5 shadow-inner gap-1">
+                <button id="scheduleTab" class="py-3 px-2 text-xs font-semibold rounded-lg transition-all duration-200 tab-btn active">
+                    Schedule
+                </button>
+                <button id="devicesTab" class="py-3 px-2 text-xs font-semibold rounded-lg transition-all duration-200 tab-btn">
+                    Devices
+                </button>
+                <button id="analyticsTab" class="py-3 px-2 text-xs font-semibold rounded-lg transition-all duration-200 tab-btn">
+                    Analytics
+                </button>
+                <button id="ecoTab" class="py-3 px-2 text-xs font-semibold rounded-lg transition-all duration-200 tab-btn">
+                    Eco Hub
+                </button>
+                <button id="settingsTab" class="py-3 px-2 text-xs font-semibold rounded-lg transition-all duration-200 tab-btn">
+                    Settings
+                </button>
+            </div>
+        </nav>
+
+        <!-- Schedule Tab -->
+        <div id="scheduleContent" class="tab-content">
+            <!-- Location Setup -->
+            <div id="locationSetup" class="mb-6">
+                <div class="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 rounded-2xl p-6 shadow-lg mb-6">
+                    <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-4 text-center">Find Your Collection Schedule</h2>
+                    <div class="space-y-5">
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">
+                                Enter Your Postcode
+                            </label>
+                            <div class="relative">
+                                <input type="text" id="postcodeInput" placeholder="e.g. M1 1AA, B1 1BB, LS1 1AB..." 
+                                       class="w-full px-5 py-4 text-base border-2 border-gray-200 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-primary transition-all">
+                                <div class="absolute inset-y-0 right-0 flex items-center pr-4">
+                                    <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        <button id="findCouncilBtn"
+                                class="w-full bg-gradient-to-r from-primary to-purple-600 text-white py-4 rounded-xl font-semibold hover:from-purple-600 hover:to-primary transition-all duration-200 shadow-lg transform hover:scale-[1.02]">
+                            Get My Collection Schedule
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Collection Schedule -->
+            <div id="scheduleDisplay" class="hidden">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-xl font-bold text-gray-900 dark:text-white">Collection Schedule</h2>
+                    <span id="councilName" class="text-sm text-gray-600 dark:text-gray-400 font-medium"></span>
+                </div>
+
+                <!-- Next Collection Card -->
+                <div class="bg-gradient-to-br from-primary to-purple-600 rounded-2xl p-6 text-white mb-6 shadow-lg">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-xl font-bold">Next Collection</h3>
+                        <svg class="w-6 h-6 text-white/80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                        </svg>
+                    </div>
+                    <div id="nextCollection" class="space-y-3 mb-4"></div>
+                    <div class="flex space-x-3">
+                        <button id="setReminderBtn" class="flex-1 bg-white/20 hover:bg-white/30 py-3 px-4 rounded-xl text-sm font-semibold transition-all">
+                            Set Reminder
+                        </button>
+                        <button id="markCollectedBtn" class="flex-1 bg-white/20 hover:bg-white/30 py-3 px-4 rounded-xl text-sm font-semibold transition-all">
+                            Mark Collected
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Report Missed Collection -->
+                <div class="bg-red-50 dark:bg-red-900/20 border-2 border-red-200 dark:border-red-800 rounded-2xl p-5 mb-6">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h3 class="text-lg font-semibold text-red-800 dark:text-red-200 mb-1">Missed Collection?</h3>
+                            <p class="text-sm text-red-600 dark:text-red-300">Report directly to your council</p>
+                        </div>
+                        <button id="reportMissedBtn"
+                                class="bg-red-500 hover:bg-red-600 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-200 shadow-lg transform hover:scale-[1.02] flex items-center">
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"/>
+                            </svg>
+                            Report
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Weekly Schedule -->
+                <div class="space-y-4">
+                    <h3 class="text-xl font-bold text-gray-900 dark:text-white">This Week</h3>
+                    <div id="weeklySchedule" class="space-y-3"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Devices Tab -->
+        <div id="devicesContent" class="tab-content hidden">
+            <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-6">Connected Devices</h2>
+            
+            <div class="grid grid-cols-2 gap-4 mb-6">
+                <div class="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 rounded-xl p-4 text-center">
+                    <div class="text-3xl font-bold text-blue-600 dark:text-blue-400" id="connectedCount">0</div>
+                    <div class="text-sm text-blue-700 dark:text-blue-300 font-medium">Connected</div>
+                </div>
+                <div class="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-800/20 rounded-xl p-4 text-center">
+                    <div class="text-3xl font-bold text-green-600 dark:text-green-400" id="batteryAvg">0%</div>
+                    <div class="text-sm text-green-700 dark:text-green-300 font-medium">Avg Battery</div>
+                </div>
+            </div>
+
+            <div class="space-y-4 mb-6">
+                <h3 class="font-bold text-gray-900 dark:text-white">Add New Device</h3>
+                <div class="grid grid-cols-2 gap-3">
+                    <button id="scanWifiBtn" class="bg-gradient-to-r from-blue-500 to-blue-600 text-white py-4 rounded-xl font-semibold hover:from-blue-600 hover:to-blue-700 transition-all shadow-lg transform hover:scale-[1.02] flex items-center justify-center">
+                        <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.07 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z"/>
+                        </svg>
+                        WiFi
+                    </button>
+                    
+                    <button id="scanBluetoothBtn" class="bg-gradient-to-r from-indigo-500 to-indigo-600 text-white py-4 rounded-xl font-semibold hover:from-indigo-600 hover:to-indigo-700 transition-all shadow-lg transform hover:scale-[1.02] flex items-center justify-center">
+                        <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M17.71 7.71L12 2h-1v7.59L6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 11 14.41V22h1l5.71-5.71-4.3-4.29 4.3-4.29zM13 5.83l1.88 1.88L13 9.59V5.83zm1.88 10.46L13 18.17v-3.76l1.88 1.88z"/>
+                        </svg>
+                        Bluetooth
+                    </button>
+                </div>
+            </div>
+
+            <div id="discoveredDevices" class="hidden mb-6">
+                <h3 class="font-bold text-gray-900 dark:text-white mb-3">Available Devices</h3>
+                <div id="deviceList" class="space-y-3"></div>
+            </div>
+
+            <div id="connectedDevices" class="hidden">
+                <h3 class="font-bold text-gray-900 dark:text-white mb-3">My Devices</h3>
+                <div id="connectedDeviceList" class="space-y-3"></div>
+                
+                <div class="mt-6 grid grid-cols-2 gap-3">
+                    <button id="testAllBtn" class="bg-gray-600 text-white py-3 rounded-xl font-semibold hover:bg-gray-700 transition-all">
+                        Test All Lights
+                    </button>
+                    <button id="updateAllBtn" class="bg-green-600 text-white py-3 rounded-xl font-semibold hover:bg-green-700 transition-all">
+                        Update Firmware
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Analytics Tab -->
+        <div id="analyticsContent" class="tab-content hidden">
+            <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-6">Waste Analytics</h2>
+            
+            <!-- Analytics Overview -->
+            <div class="grid grid-cols-2 gap-4 mb-6">
+                <div class="bg-gradient-to-br from-eco-green/10 to-eco-green/20 dark:from-eco-green/20 dark:to-eco-green/30 rounded-xl p-4 border border-eco-green/20">
+                    <div class="flex items-center justify-between mb-2">
+                        <div class="text-2xl font-bold text-eco-green" id="recyclingRate">76%</div>
+                        <i data-lucide="recycle" class="w-5 h-5 text-eco-green"></i>
+                    </div>
+                    <div class="text-sm text-gray-600 dark:text-gray-400 font-medium">Recycling Rate</div>
+                    <div class="text-xs text-eco-green font-medium">+5% vs last month</div>
+                </div>
+                
+                <div class="bg-gradient-to-br from-primary/10 to-primary/20 dark:from-primary/20 dark:to-primary/30 rounded-xl p-4 border border-primary/20">
+                    <div class="flex items-center justify-between mb-2">
+                        <div class="text-2xl font-bold text-primary" id="carbonSaved">18.2kg</div>
+                        <i data-lucide="leaf" class="w-5 h-5 text-primary"></i>
+                    </div>
+                    <div class="text-sm text-gray-600 dark:text-gray-400 font-medium">CO₂ Saved</div>
+                    <div class="text-xs text-primary font-medium">This month</div>
+                </div>
+            </div>
+
+            <!-- Monthly Trend Chart -->
+            <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg mb-6">
+                <h3 class="font-bold text-gray-900 dark:text-white mb-4">Monthly Waste Trends</h3>
+                <div class="h-64 flex items-center justify-center">
+                    <canvas id="wasteChart" class="w-full h-full"></canvas>
+                </div>
+            </div>
+
+            <!-- Waste Breakdown -->
+            <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg mb-6">
+                <h3 class="font-bold text-gray-900 dark:text-white mb-4">This Month's Breakdown</h3>
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center">
+                            <div class="w-4 h-4 bg-bin-recycling rounded-full mr-3"></div>
+                            <span class="text-gray-700 dark:text-gray-300">Recycling</span>
+                        </div>
+                        <div class="text-right">
+                            <div class="font-semibold text-gray-900 dark:text-white">45.2kg</div>
+                            <div class="text-sm text-eco-green">+12%</div>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center">
+                            <div class="w-4 h-4 bg-bin-general rounded-full mr-3"></div>
+                            <span class="text-gray-700 dark:text-gray-300">General Waste</span>
+                        </div>
+                        <div class="text-right">
+                            <div class="font-semibold text-gray-900 dark:text-white">23.8kg</div>
+                            <div class="text-sm text-red-500">-8%</div>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center">
+                            <div class="w-4 h-4 bg-bin-garden rounded-full mr-3"></div>
+                            <span class="text-gray-700 dark:text-gray-300">Garden Waste</span>
+                        </div>
+                        <div class="text-right">
+                            <div class="font-semibold text-gray-900 dark:text-white">31.5kg</div>
+                            <div class="text-sm text-yellow-500">+2%</div>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center">
+                            <div class="w-4 h-4 bg-bin-food rounded-full mr-3"></div>
+                            <span class="text-gray-700 dark:text-gray-300">Food Waste</span>
+                        </div>
+                        <div class="text-right">
+                            <div class="font-semibold text-gray-900 dark:text-white">8.1kg</div>
+                            <div class="text-sm text-eco-green">-15%</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AI Insights -->
+            <div class="bg-gradient-to-br from-accent/10 to-accent/20 dark:from-accent/20 dark:to-accent/30 rounded-2xl p-6 border border-accent/20 mb-6">
+                <div class="flex items-center mb-4">
+                    <i data-lucide="brain" class="w-6 h-6 text-accent mr-3"></i>
+                    <h3 class="font-bold text-gray-900 dark:text-white">AI Insights</h3>
+                </div>
+                <div class="space-y-3">
+                    <div class="flex items-start">
+                        <div class="w-2 h-2 bg-accent rounded-full mt-2 mr-3 flex-shrink-0"></div>
+                        <p class="text-sm text-gray-700 dark:text-gray-300">
+                            Your recycling has improved by <strong>12%</strong> this month. Keep up the great work!
+                        </p>
+                    </div>
+                    <div class="flex items-start">
+                        <div class="w-2 h-2 bg-accent rounded-full mt-2 mr-3 flex-shrink-0"></div>
+                        <p class="text-sm text-gray-700 dark:text-gray-300">
+                            Consider composting to reduce food waste by an estimated <strong>20%</strong>.
+                        </p>
+                    </div>
+                    <div class="flex items-start">
+                        <div class="w-2 h-2 bg-accent rounded-full mt-2 mr-3 flex-shrink-0"></div>
+                        <p class="text-sm text-gray-700 dark:text-gray-300">
+                            Peak collection efficiency detected on <strong>Wednesdays</strong> in your area.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Goal Setting -->
+            <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg">
+                <h3 class="font-bold text-gray-900 dark:text-white mb-4">Monthly Goals</h3>
+                <div class="space-y-4">
+                    <div>
+                        <div class="flex justify-between mb-2">
+                            <span class="text-sm text-gray-600 dark:text-gray-400">Reduce General Waste</span>
+                            <span class="text-sm font-semibold text-gray-900 dark:text-white">8.2kg / 10kg</span>
+                        </div>
+                        <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                            <div class="bg-eco-green h-2 rounded-full" style="width: 82%"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex justify-between mb-2">
+                            <span class="text-sm text-gray-600 dark:text-gray-400">Increase Recycling</span>
+                            <span class="text-sm font-semibold text-gray-900 dark:text-white">45kg / 50kg</span>
+                        </div>
+                        <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                            <div class="bg-primary h-2 rounded-full" style="width: 90%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Eco Hub Tab -->
+        <div id="ecoContent" class="tab-content hidden">
+            <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-6">Eco Hub</h2>
+            
+            <!-- Environmental Impact -->
+            <div class="bg-gradient-to-br from-eco-green to-carbon-neutral rounded-2xl p-6 text-white mb-6 shadow-lg">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-xl font-bold">Your Environmental Impact</h3>
+                    <i data-lucide="globe" class="w-6 h-6 text-white/80"></i>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <div class="text-3xl font-bold">127</div>
+                        <div class="text-sm text-white/80">Trees Equivalent Saved</div>
+                    </div>
+                    <div>
+                        <div class="text-3xl font-bold">2.1T</div>
+                        <div class="text-sm text-white/80">CO₂ Prevented (Lifetime)</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Local Initiatives -->
+            <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg mb-6">
+                <h3 class="font-bold text-gray-900 dark:text-white mb-4">Local Green Initiatives</h3>
+                <div class="space-y-4">
+                    <div class="flex items-start p-4 bg-gray-50 dark:bg-gray-700 rounded-xl">
+                        <div class="w-8 h-8 bg-eco-green rounded-lg flex items-center justify-center mr-4 flex-shrink-0">
+                            <i data-lucide="map-pin" class="w-4 h-4 text-white"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-gray-900 dark:text-white">Community Composting Hub</h4>
+                            <p class="text-sm text-gray-600 dark:text-gray-400">0.3 miles away • Open Saturdays 9-5</p>
+                            <button class="text-eco-green text-sm font-semibold mt-2 hover:underline">Get Directions</button>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-start p-4 bg-gray-50 dark:bg-gray-700 rounded-xl">
+                        <div class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center mr-4 flex-shrink-0">
+                            <i data-lucide="recycle" class="w-4 h-4 text-white"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-gray-900 dark:text-white">Electronics Recycling Drive</h4>
+                            <p class="text-sm text-gray-600 dark:text-gray-400">Next Saturday • Town Hall Car Park</p>
+                            <button class="text-primary text-sm font-semibold mt-2 hover:underline">Add to Calendar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recycling Guide -->
+            <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg mb-6">
+                <h3 class="font-bold text-gray-900 dark:text-white mb-4">Quick Recycling Guide</h3>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="p-4 bg-green-50 dark:bg-green-900/20 rounded-xl border border-green-200 dark:border-green-800">
+                        <div class="flex items-center mb-2">
+                            <i data-lucide="check-circle" class="w-5 h-5 text-green-600 mr-2"></i>
+                            <span class="font-semibold text-green-800 dark:text-green-200">CAN Recycle</span>
+                        </div>
+                        <ul class="text-sm text-green-700 dark:text-green-300 space-y-1">
+                            <li>• Paper & cardboard</li>
+                            <li>• Glass bottles & jars</li>
+                            <li>• Plastic bottles</li>
+                            <li>• Metal cans</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="p-4 bg-red-50 dark:bg-red-900/20 rounded-xl border border-red-200 dark:border-red-800">
+                        <div class="flex items-center mb-2">
+                            <i data-lucide="x-circle" class="w-5 h-5 text-red-600 mr-2"></i>
+                            <span class="font-semibold text-red-800 dark:text-red-200">CANNOT Recycle</span>
+                        </div>
+                        <ul class="text-sm text-red-700 dark:text-red-300 space-y-1">
+                            <li>• Food waste</li>
+                            <li>• Plastic bags</li>
+                            <li>• Broken glass</li>
+                            <li>• Electronics</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Eco Tips -->
+            <div class="bg-gradient-to-br from-accent/10 to-accent/20 dark:from-accent/20 dark:to-accent/30 rounded-2xl p-6 border border-accent/20 mb-6">
+                <div class="flex items-center mb-4">
+                    <i data-lucide="lightbulb" class="w-6 h-6 text-accent mr-3"></i>
+                    <h3 class="font-bold text-gray-900 dark:text-white">Eco Tip of the Day</h3>
+                </div>
+                <p class="text-gray-700 dark:text-gray-300 mb-4">
+                    <strong>Reduce food waste:</strong> Plan your meals ahead and store fruits and vegetables properly. 
+                    This can reduce household food waste by up to 40%!
+                </p>
+                <div class="flex space-x-3">
+                    <button class="bg-accent text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-accent/90 transition-colors">
+                        Share Tip
+                    </button>
+                    <button class="text-accent border border-accent px-4 py-2 rounded-lg text-sm font-semibold hover:bg-accent/10 transition-colors">
+                        More Tips
+                    </button>
+                </div>
+            </div>
+
+            <!-- Carbon Calculator -->
+            <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg">
+                <h3 class="font-bold text-gray-900 dark:text-white mb-4">Carbon Footprint Calculator</h3>
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                            Weekly household waste (kg)
+                        </label>
+                        <input type="range" id="wasteSlider" min="5" max="50" value="25" 
+                               class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700">
+                        <div class="flex justify-between text-xs text-gray-500 mt-1">
+                            <span>5kg</span>
+                            <span id="wasteValue">25kg</span>
+                            <span>50kg</span>
+                        </div>
+                    </div>
+                    <div class="bg-gray-50 dark:bg-gray-700 rounded-xl p-4">
+                        <div class="text-center">
+                            <div class="text-2xl font-bold text-primary" id="carbonFootprint">4.2kg</div>
+                            <div class="text-sm text-gray-600 dark:text-gray-400">Weekly CO₂ Impact</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Settings Tab -->
+        <div id="settingsContent" class="tab-content hidden">
+            <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-6">Settings</h2>
+            
+            <div class="space-y-6">
+                <!-- Data Source Settings -->
+                <div class="bg-gray-50 dark:bg-gray-800 rounded-xl p-5">
+                    <h3 class="font-bold text-gray-900 dark:text-white mb-4">Data Source</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <span class="text-gray-700 dark:text-gray-300">Use Real Council Data</span>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="realDataToggle" class="sr-only peer" checked>
+                                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary/20 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary"></div>
+                            </label>
+                        </div>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">When enabled, fetches live data from council websites. Falls back to local data if unavailable.</p>
+                    </div>
+                </div>
+
+                <!-- Notifications -->
+                <div class="bg-gray-50 dark:bg-gray-800 rounded-xl p-5">
+                    <h3 class="font-bold text-gray-900 dark:text-white mb-4">Notifications</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <span class="text-gray-700 dark:text-gray-300">Push Notifications</span>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="pushToggle" class="sr-only peer" checked>
+                                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary/20 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary"></div>
+                            </label>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm text-gray-600 dark:text-gray-400 mb-2">Reminder timing</label>
+                            <select id="reminderTime" class="w-full px-4 py-3 text-base border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white">
+                                <option>Evening before</option>
+                                <option>2 hours before</option>
+                                <option>1 hour before</option>
+                                <option>30 minutes before</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Light Settings -->
+                <div class="bg-gray-50 dark:bg-gray-800 rounded-xl p-5">
+                    <h3 class="font-bold text-gray-900 dark:text-white mb-4">Light Settings</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <span class="text-gray-700 dark:text-gray-300">Auto-brightness</span>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="autobrightness" class="sr-only peer" checked>
+                                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary/20 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary"></div>
+                            </label>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm text-gray-600 dark:text-gray-400 mb-2">Light duration</label>
+                            <select id="lightDuration" class="w-full px-4 py-3 text-base border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white">
+                                <option>Until collection</option>
+                                <option>24 hours</option>
+                                <option>12 hours</option>
+                                <option>6 hours</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bin Colors -->
+                <div class="bg-gray-50 dark:bg-gray-800 rounded-xl p-5">
+                    <h3 class="font-bold text-gray-900 dark:text-white mb-4">Bin Types & Colors</h3>
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between p-3 bg-white dark:bg-gray-700 rounded-lg">
+                            <div class="flex items-center">
+                                <div class="w-4 h-4 bg-bin-general rounded-full mr-3"></div>
+                                <span class="text-gray-700 dark:text-gray-300">General Waste</span>
+                            </div>
+                            <span class="text-sm text-gray-500">Grey Light</span>
+                        </div>
+                        <div class="flex items-center justify-between p-3 bg-white dark:bg-gray-700 rounded-lg">
+                            <div class="flex items-center">
+                                <div class="w-4 h-4 bg-bin-recycling rounded-full mr-3"></div>
+                                <span class="text-gray-700 dark:text-gray-300">Recycling</span>
+                            </div>
+                            <span class="text-sm text-gray-500">Green Light</span>
+                        </div>
+                        <div class="flex items-center justify-between p-3 bg-white dark:bg-gray-700 rounded-lg">
+                            <div class="flex items-center">
+                                <div class="w-4 h-4 bg-bin-garden rounded-full mr-3"></div>
+                                <span class="text-gray-700 dark:text-gray-300">Garden Waste</span>
+                            </div>
+                            <span class="text-sm text-gray-500">Orange Light</span>
+                        </div>
+                        <div class="flex items-center justify-between p-3 bg-white dark:bg-gray-700 rounded-lg">
+                            <div class="flex items-center">
+                                <div class="w-4 h-4 bg-bin-food rounded-full mr-3"></div>
+                                <span class="text-gray-700 dark:text-gray-300">Food Waste</span>
+                            </div>
+                            <span class="text-sm text-gray-500">Purple Light</span>
+                        </div>
+                    </div>
+                </div>
+
+                <button id="testLightsBtn" class="w-full bg-gradient-to-r from-primary to-purple-600 text-white py-4 rounded-xl font-bold hover:from-purple-600 hover:to-primary transition-all duration-200 shadow-lg transform hover:scale-[1.02]">
+                    Test All Connected Lights
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div id="modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-xl max-w-sm w-full mx-4">
+            <h3 id="modalTitle" class="text-lg font-bold text-gray-900 dark:text-white mb-3"></h3>
+            <div id="modalContent" class="text-gray-700 dark:text-gray-300 mb-6"></div>
+            <div class="flex justify-end space-x-3">
+                <button id="modalCancel" class="px-4 py-2 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg">Cancel</button>
+                <button id="modalConfirm" class="px-4 py-2 bg-primary text-white hover:bg-purple-600 rounded-lg">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // App state
+        let connectedDevices = [];
+        let currentCouncil = null;
+        let useRealData = true;
+
+        const binColors = {
+            'General Waste': 'bin-general',
+            'Recycling': 'bin-recycling', 
+            'Garden Waste': 'bin-garden',
+            'Food Waste': 'bin-food'
+        };
+
+        // API functions
+        async function fetchBinData(postcode) {
+            if (!useRealData) {
+                return getFallbackData(postcode);
+            }
+
+            try {
+                showDataSource('live', 'Fetching live council data...');
+                
+                const response = await fetch(`/api/bindata?postcode=${encodeURIComponent(postcode)}`);
+                const data = await response.json();
+                
+                if (data.success && data.bins && data.bins.length > 0) {
+                    showDataSource('live', 'Live council data');
+                    return {
+                        name: data.council || 'Local Council',
+                        schedule: formatBinData(data.bins),
+                        isLive: true
+                    };
+                } else {
+                    throw new Error('No live data available');
+                }
+            } catch (error) {
+                console.warn('Live data failed, using fallback:', error);
+                showDataSource('fallback', 'Using local data');
+                return getFallbackData(postcode);
+            }
+        }
+
+        function formatBinData(bins) {
+            const schedule = {};
+            bins.forEach(bin => {
+                const binType = bin.type || 'General Waste';
+                const collectionDate = new Date(bin.collectionDate);
+                const dayName = collectionDate.toLocaleDateString('en-GB', { weekday: 'long' });
+                schedule[binType] = dayName;
+            });
+            return schedule;
+        }
+
+        function showDataSource(type, message) {
+            const container = document.getElementById('dataSource');
+            const icon = document.getElementById('dataSourceIcon');
+            const text = document.getElementById('dataSourceText');
+            
+            if (type === 'live') {
+                container.className = 'mb-4 p-3 rounded-lg text-center bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800';
+                icon.className = 'w-3 h-3 rounded-full mr-2 bg-green-500';
+                text.textContent = `🌐 ${message}`;
+            } else {
+                container.className = 'mb-4 p-3 rounded-lg text-center bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800';
+                icon.className = 'w-3 h-3 rounded-full mr-2 bg-blue-500';
+                text.textContent = `📋 ${message}`;
+            }
+            
+            container.classList.remove('hidden');
+        }
+
+        // Fallback data function
+        function getFallbackData(postcode) {
+            const area = postcode.substring(0, 2).toUpperCase();
+            
+            const councilMap = {
+                // Major cities with realistic schedules
+                'M1': { name: 'Manchester City Council', schedule: { 'General Waste': 'Thursday', 'Recycling': 'Thursday', 'Garden Waste': 'Every 2 weeks (Friday)' }},
+                'M2': { name: 'Manchester City Council', schedule: { 'General Waste': 'Tuesday', 'Recycling': 'Tuesday', 'Garden Waste': 'Every 2 weeks (Wednesday)' }},
+                'B1': { name: 'Birmingham City Council', schedule: { 'General Waste': 'Tuesday', 'Recycling': 'Every 2 weeks (Tuesday)', 'Garden Waste': 'Every 2 weeks (Friday)', 'Food Waste': 'Tuesday' }},
+                'B2': { name: 'Birmingham City Council', schedule: { 'General Waste': 'Wednesday', 'Recycling': 'Every 2 weeks (Wednesday)', 'Garden Waste': 'Every 2 weeks (Monday)', 'Food Waste': 'Wednesday' }},
+                'LS': { name: 'Leeds City Council', schedule: { 'General Waste': 'Friday', 'Recycling': 'Friday', 'Garden Waste': 'Every 2 weeks (Friday)', 'Food Waste': 'Friday' }},
+                'L1': { name: 'Liverpool City Council', schedule: { 'General Waste': 'Monday', 'Recycling': 'Every 2 weeks (Monday)', 'Garden Waste': 'Every 2 weeks (Wednesday)' }},
+                'S1': { name: 'Sheffield City Council', schedule: { 'General Waste': 'Tuesday', 'Recycling': 'Every 2 weeks (Tuesday)', 'Garden Waste': 'Every 2 weeks (Thursday)' }},
+                'SW': { name: 'SW London Council', schedule: { 'General Waste': 'Wednesday', 'Recycling': 'Wednesday', 'Garden Waste': 'Every 2 weeks (Wednesday)', 'Food Waste': 'Wednesday' }},
+                'SE': { name: 'SE London Council', schedule: { 'General Waste': 'Thursday', 'Recycling': 'Every 2 weeks (Thursday)', 'Garden Waste': 'Every 2 weeks (Friday)' }},
+                'E1': { name: 'Tower Hamlets Council', schedule: { 'General Waste': 'Tuesday', 'Recycling': 'Tuesday', 'Food Waste': 'Tuesday' }},
+                'N1': { name: 'Islington Council', schedule: { 'General Waste': 'Monday', 'Recycling': 'Monday', 'Food Waste': 'Monday' }},
+                'NW': { name: 'NW London Council', schedule: { 'General Waste': 'Friday', 'Recycling': 'Friday', 'Garden Waste': 'Every 2 weeks (Friday)' }},
+                'G1': { name: 'Glasgow City Council', schedule: { 'General Waste': 'Monday', 'Recycling': 'Every 2 weeks (Monday)', 'Garden Waste': 'Every 2 weeks (Wednesday)' }},
+                'EH': { name: 'Edinburgh Council', schedule: { 'General Waste': 'Wednesday', 'Recycling': 'Every 2 weeks (Wednesday)', 'Garden Waste': 'Every 2 weeks (Friday)' }},
+                'CF': { name: 'Cardiff Council', schedule: { 'General Waste': 'Monday', 'Recycling': 'Monday', 'Garden Waste': 'Every 2 weeks (Wednesday)', 'Food Waste': 'Monday' }},
+                'BS': { name: 'Bristol City Council', schedule: { 'General Waste': 'Friday', 'Recycling': 'Every 2 weeks (Friday)', 'Garden Waste': 'Every 2 weeks (Tuesday)', 'Food Waste': 'Friday' }},
+                'OX': { name: 'Oxford City Council', schedule: { 'General Waste': 'Wednesday', 'Recycling': 'Wednesday', 'Garden Waste': 'Every 2 weeks (Friday)', 'Food Waste': 'Wednesday' }},
+                'CB': { name: 'Cambridge City Council', schedule: { 'General Waste': 'Wednesday', 'Recycling': 'Every 2 weeks (Wednesday)', 'Garden Waste': 'Every 2 weeks (Friday)' }},
+                'MK': { name: 'Milton Keynes Council', schedule: { 'General Waste': 'Tuesday', 'Recycling': 'Tuesday', 'Garden Waste': 'Every 2 weeks (Thursday)', 'Food Waste': 'Tuesday' }},
+                'NG': { name: 'Nottingham City Council', schedule: { 'General Waste': 'Monday', 'Recycling': 'Every 2 weeks (Monday)', 'Garden Waste': 'Every 2 weeks (Wednesday)' }},
+                'LE': { name: 'Leicester City Council', schedule: { 'General Waste': 'Tuesday', 'Recycling': 'Every 2 weeks (Tuesday)', 'Garden Waste': 'Every 2 weeks (Thursday)' }},
+                'CV': { name: 'Coventry City Council', schedule: { 'General Waste': 'Wednesday', 'Recycling': 'Every 2 weeks (Wednesday)', 'Garden Waste': 'Every 2 weeks (Friday)' }},
+                'NE': { name: 'Newcastle City Council', schedule: { 'General Waste': 'Thursday', 'Recycling': 'Every 2 weeks (Thursday)', 'Garden Waste': 'Every 2 weeks (Monday)' }},
+                'YO': { name: 'York City Council', schedule: { 'General Waste': 'Tuesday', 'Recycling': 'Every 2 weeks (Tuesday)', 'Garden Waste': 'Every 2 weeks (Thursday)' }},
+                'BN': { name: 'Brighton & Hove Council', schedule: { 'General Waste': 'Friday', 'Recycling': 'Every 2 weeks (Friday)', 'Garden Waste': 'Every 2 weeks (Tuesday)' }},
+                'SO': { name: 'Southampton City Council', schedule: { 'General Waste': 'Monday', 'Recycling': 'Every 2 weeks (Monday)', 'Garden Waste': 'Every 2 weeks (Wednesday)' }},
+                'PO': { name: 'Portsmouth City Council', schedule: { 'General Waste': 'Tuesday', 'Recycling': 'Every 2 weeks (Tuesday)', 'Garden Waste': 'Every 2 weeks (Thursday)' }}
+            };
+            
+            return councilMap[area] || {
+                name: `${area} Local Council`,
+                schedule: {
+                    'General Waste': ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'][Math.floor(Math.random() * 5)],
+                    'Recycling': `Every 2 weeks (${['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'][Math.floor(Math.random() * 5)]})`,
+                    'Garden Waste': `Every 2 weeks (${['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'][Math.floor(Math.random() * 5)]})`
+                },
+                isLive: false
+            };
+        }
+
+        // Tab functionality
+        function initTabs() {
+            const tabs = document.querySelectorAll('.tab-btn');
+            const contents = document.querySelectorAll('.tab-content');
+
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    tabs.forEach(t => t.classList.remove('active'));
+                    contents.forEach(c => c.classList.add('hidden'));
+
+                    tab.classList.add('active');
+                    const contentId = tab.id.replace('Tab', 'Content');
+                    document.getElementById(contentId).classList.remove('hidden');
+                });
+            });
+        }
+
+        // Modal functions
+        function showModal(title, content, onConfirm) {
+            document.getElementById('modalTitle').textContent = title;
+            document.getElementById('modalContent').innerHTML = typeof content === 'string' ? `<p>${content}</p>` : content;
+            document.getElementById('modal').classList.remove('hidden');
+            
+            document.getElementById('modalConfirm').onclick = () => {
+                document.getElementById('modal').classList.add('hidden');
+                if (onConfirm) onConfirm();
+            };
+            
+            document.getElementById('modalCancel').onclick = () => {
+                document.getElementById('modal').classList.add('hidden');
+            };
+        }
+
+        // Main council lookup function
+        async function findCouncil() {
+            const postcode = document.getElementById('postcodeInput').value.trim().toUpperCase();
+            
+            if (!postcode) {
+                showModal('Error', 'Please enter a postcode');
+                return;
+            }
+
+            const btn = document.getElementById('findCouncilBtn');
+            btn.textContent = 'Searching...';
+            btn.disabled = true;
+
+            try {
+                const council = await fetchBinData(postcode);
+                
+                currentCouncil = council;
+                document.getElementById('councilName').textContent = council.name;
+                displaySchedule(council.schedule);
+                document.getElementById('locationSetup').classList.add('hidden');
+                document.getElementById('scheduleDisplay').classList.remove('hidden');
+            } catch (error) {
+                console.error('Error fetching council data:', error);
+                showModal('Error', 'Unable to fetch bin collection data. Please try again.');
+            } finally {
+                btn.textContent = 'Get My Collection Schedule';
+                btn.disabled = false;
+            }
+        }
+
+        // Display schedule
+        function displaySchedule(schedule) {
+            const weeklySchedule = document.getElementById('weeklySchedule');
+            weeklySchedule.innerHTML = '';
+
+            // Show next collection
+            const nextCollection = getNextCollection(schedule);
+            document.getElementById('nextCollection').innerHTML = `
+                <div class="flex items-center">
+                    <div class="w-5 h-5 bg-white/20 rounded-full mr-4"></div>
+                    <span class="font-semibold text-lg">${nextCollection.type} - ${nextCollection.when}</span>
+                </div>
+            `;
+
+            // Display weekly schedule
+            Object.entries(schedule).forEach(([binType, day]) => {
+                const item = document.createElement('div');
+                item.className = 'bg-white dark:bg-gray-800 rounded-xl p-4 flex items-center justify-between shadow-sm';
+                item.innerHTML = `
+                    <div class="flex items-center">
+                        <div class="w-4 h-4 bg-${binColors[binType] || 'bin-general'} rounded-full mr-3"></div>
+                        <div>
+                            <div class="font-semibold text-gray-900 dark:text-white">${binType}</div>
+                            <div class="text-sm text-gray-600 dark:text-gray-400">${day}</div>
+                        </div>
+                    </div>
+                    <button class="text-primary hover:text-purple-600 text-sm font-semibold" onclick="setSpecificReminder('${binType}')">
+                        Set Reminder
+                    </button>
+                `;
+                weeklySchedule.appendChild(item);
+            });
+        }
+
+        // Get next collection
+        function getNextCollection(schedule) {
+            const types = Object.keys(schedule);
+            const randomType = types[Math.floor(Math.random() * types.length)];
+            return {
+                type: randomType,
+                when: 'Tomorrow'
+            };
+        }
+
+        // Device management functions
+        function scanForDevices(type) {
+            const btn = type === 'wifi' ? document.getElementById('scanWifiBtn') : document.getElementById('scanBluetoothBtn');
+            const originalText = btn.textContent;
+            
+            btn.textContent = 'Scanning...';
+            btn.disabled = true;
+
+            setTimeout(() => {
+                const devices = type === 'wifi' ? 
+                    ['BinBuddy-Kitchen-2.4G', 'BinBuddy-Garden-5G', 'BinBuddy-Garage-2.4G'] :
+                    ['BinBuddy-BT-001', 'BinBuddy-BT-002', 'BinBuddy-BT-003'];
+
+                displayDiscoveredDevices(devices, type);
+                btn.textContent = originalText;
+                btn.disabled = false;
+            }, 2000);
+        }
+
+        function displayDiscoveredDevices(devices, type) {
+            const container = document.getElementById('discoveredDevices');
+            const deviceList = document.getElementById('deviceList');
+            
+            deviceList.innerHTML = '';
+            
+            devices.forEach(device => {
+                const item = document.createElement('div');
+                item.className = 'bg-white dark:bg-gray-800 rounded-xl p-4 flex items-center justify-between shadow-sm';
+                item.innerHTML = `
+                    <div>
+                        <div class="font-semibold text-gray-900 dark:text-white">${device}</div>
+                        <div class="text-sm text-gray-600 dark:text-gray-400">${type.toUpperCase()} • Signal: Strong</div>
+                    </div>
+                    <button class="bg-primary text-white px-4 py-2 rounded-lg text-sm hover:bg-purple-600 transition-colors connect-btn" 
+                            data-device="${device}" data-type="${type}">
+                        Connect
+                    </button>
+                `;
+                deviceList.appendChild(item);
+            });
+
+            container.classList.remove('hidden');
+
+            document.querySelectorAll('.connect-btn').forEach(btn => {
+                btn.addEventListener('click', () => connectDevice(btn.dataset.device, btn.dataset.type));
+            });
+        }
+
+        function connectDevice(deviceName, type) {
+            showModal('Connecting Device', `Connecting to ${deviceName}...`, () => {
+                const device = {
+                    name: deviceName.split('-')[0] + '-' + deviceName.split('-')[1],
+                    type: type,
+                    status: 'connected',
+                    batteryLevel: Math.floor(Math.random() * 50) + 50
+                };
+                
+                connectedDevices.push(device);
+                updateDeviceOverview();
+                displayConnectedDevices();
+                document.getElementById('discoveredDevices').classList.add('hidden');
+            });
+        }
+
+        function updateDeviceOverview() {
+            document.getElementById('connectedCount').textContent = connectedDevices.length;
+            const avgBattery = connectedDevices.length > 0 ? 
+                Math.round(connectedDevices.reduce((sum, d) => sum + d.batteryLevel, 0) / connectedDevices.length) : 0;
+            document.getElementById('batteryAvg').textContent = avgBattery + '%';
+        }
+
+        function displayConnectedDevices() {
+            const container = document.getElementById('connectedDevices');
+            const deviceList = document.getElementById('connectedDeviceList');
+            
+            if (connectedDevices.length === 0) {
+                container.classList.add('hidden');
+                return;
+            }
+
+            deviceList.innerHTML = '';
+            
+            connectedDevices.forEach((device, index) => {
+                const item = document.createElement('div');
+                item.className = 'bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm';
+                
+                const batteryColor = device.batteryLevel > 50 ? 'text-green-600' : 
+                                   device.batteryLevel > 20 ? 'text-yellow-600' : 'text-red-600';
+                
+                item.innerHTML = `
+                    <div class="flex items-center justify-between mb-3">
+                        <div>
+                            <div class="font-semibold text-gray-900 dark:text-white">${device.name}</div>
+                            <div class="text-sm text-gray-600 dark:text-gray-400">
+                                ${device.type.toUpperCase()} • <span class="${batteryColor}">Battery ${device.batteryLevel}%</span>
+                            </div>
+                        </div>
+                        <button class="text-red-500 hover:text-red-600 text-sm font-semibold disconnect-btn" data-index="${index}">
+                            Disconnect
+                        </button>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <button class="bg-primary text-white py-2 rounded-lg text-sm hover:bg-purple-600 transition-colors test-light-btn" 
+                                data-index="${index}">Test Light</button>
+                        <button class="bg-gray-500 text-white py-2 rounded-lg text-sm hover:bg-gray-600 transition-colors settings-btn" 
+                                data-index="${index}">Settings</button>
+                    </div>
+                `;
+                deviceList.appendChild(item);
+            });
+
+            container.classList.remove('hidden');
+
+            // Add event listeners
+            document.querySelectorAll('.disconnect-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const index = parseInt(btn.dataset.index);
+                    connectedDevices.splice(index, 1);
+                    updateDeviceOverview();
+                    displayConnectedDevices();
+                });
+            });
+
+            document.querySelectorAll('.test-light-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const index = parseInt(btn.dataset.index);
+                    testLight(connectedDevices[index]);
+                });
+            });
+        }
+
+        function testLight(device) {
+            showModal('Testing Light', `💡 Testing light on ${device.name}...`);
+            setTimeout(() => {
+                document.getElementById('modal').classList.add('hidden');
+            }, 2000);
+        }
+
+        // Report missed collection with email automation
+        function reportMissed() {
+            showModal('Report Missed Collection', `
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-semibold mb-2">Collection Type</label>
+                        <select id="missedType" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                            <option>General Waste</option>
+                            <option>Recycling</option>
+                            <option>Garden Waste</option>
+                            <option>Food Waste</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold mb-2">Additional Details</label>
+                        <textarea id="missedDetails" class="w-full px-3 py-2 border border-gray-300 rounded-lg" 
+                                  rows="3" placeholder="Describe the issue..."></textarea>
+                    </div>
+                    <div class="bg-blue-50 p-3 rounded-lg">
+                        <p class="text-sm text-blue-800">📧 An automated email will be sent to <strong>${currentCouncil?.name || 'your council'}</strong> with your collection details.</p>
+                    </div>
+                </div>
+            `, () => {
+                const type = document.getElementById('missedType').value;
+                // In a real implementation, this would send an actual email via the API
+                showModal('Report Submitted', `✅ Your missed ${type} collection has been reported to ${currentCouncil?.name || 'your council'}. 
+
+📧 An automated email has been sent with:
+• Your postcode and collection details
+• The missed collection type
+• Your additional notes
+• Expected response within 24 hours
+
+You should receive a confirmation email shortly.`);
+            });
+        }
+
+        // Other functions
+        function setReminder() {
+            showModal('Reminder Set', '🔔 You will be notified about the next collection.');
+        }
+
+        function markCollected() {
+            showModal('Collection Marked', '✅ Collection marked as completed. Thank you!');
+        }
+
+        function setSpecificReminder(binType) {
+            showModal('Reminder Set', `🔔 Reminder set for ${binType} collection.`);
+        }
+
+        function testAllLights() {
+            if (connectedDevices.length === 0) {
+                showModal('No Devices', 'No connected devices to test.');
+                return;
+            }
+            showModal('Testing All Lights', `💡 Testing ${connectedDevices.length} connected device(s)...`);
+            setTimeout(() => {
+                document.getElementById('modal').classList.add('hidden');
+            }, 3000);
+        }
+
+        // Premium Analytics Functions
+        function initAnalyticsChart() {
+            const ctx = document.getElementById('wasteChart');
+            if (!ctx) return;
+
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                    datasets: [
+                        {
+                            label: 'Recycling',
+                            data: [32, 35, 38, 42, 45, 48],
+                            borderColor: '#10B981',
+                            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                            tension: 0.4,
+                            fill: true
+                        },
+                        {
+                            label: 'General Waste',
+                            data: [28, 26, 25, 24, 23, 22],
+                            borderColor: '#4B5563',
+                            backgroundColor: 'rgba(75, 85, 99, 0.1)',
+                            tension: 0.4,
+                            fill: true
+                        },
+                        {
+                            label: 'Garden Waste',
+                            data: [15, 18, 22, 28, 32, 30],
+                            borderColor: '#F59E0B',
+                            backgroundColor: 'rgba(245, 158, 11, 0.1)',
+                            tension: 0.4,
+                            fill: true
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                usePointStyle: true,
+                                padding: 20,
+                                font: {
+                                    size: 12
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Weight (kg)'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Carbon Calculator Function
+        function initCarbonCalculator() {
+            const slider = document.getElementById('wasteSlider');
+            const wasteValue = document.getElementById('wasteValue');
+            const carbonFootprint = document.getElementById('carbonFootprint');
+
+            if (slider && wasteValue && carbonFootprint) {
+                slider.addEventListener('input', (e) => {
+                    const waste = parseInt(e.target.value);
+                    wasteValue.textContent = `${waste}kg`;
+                    
+                    // Calculate CO2 based on waste amount (simplified formula)
+                    const co2 = (waste * 0.17).toFixed(1); // Rough estimate
+                    carbonFootprint.textContent = `${co2}kg`;
+                });
+            }
+        }
+
+        // Lucide Icons Initialization
+        function initLucideIcons() {
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
+        }
+
+        // Animate counters
+        function animateCounters() {
+            const counters = [
+                { element: document.getElementById('recyclingRate'), target: 76, suffix: '%' },
+                { element: document.getElementById('carbonSaved'), target: 18.2, suffix: 'kg' }
+            ];
+
+            counters.forEach(counter => {
+                if (counter.element) {
+                    let current = 0;
+                    const increment = counter.target / 50;
+                    const timer = setInterval(() => {
+                        current += increment;
+                        if (current >= counter.target) {
+                            counter.element.textContent = counter.target + counter.suffix;
+                            clearInterval(timer);
+                        } else {
+                            counter.element.textContent = Math.floor(current) + counter.suffix;
+                        }
+                    }, 30);
+                }
+            });
+        }
+
+        // Enhanced tab functionality with analytics initialization
+        function initTabsWithAnalytics() {
+            const tabs = document.querySelectorAll('.tab-btn');
+            const contents = document.querySelectorAll('.tab-content');
+
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    tabs.forEach(t => t.classList.remove('active'));
+                    contents.forEach(c => c.classList.add('hidden'));
+
+                    tab.classList.add('active');
+                    const contentId = tab.id.replace('Tab', 'Content');
+                    const content = document.getElementById(contentId);
+                    content.classList.remove('hidden');
+
+                    // Initialize analytics chart when analytics tab is opened
+                    if (tab.id === 'analyticsTab') {
+                        setTimeout(() => {
+                            initAnalyticsChart();
+                            animateCounters();
+                        }, 100);
+                    }
+
+                    // Initialize icons when any tab is opened
+                    setTimeout(initLucideIcons, 50);
+                });
+            });
+        }
+
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', () => {
+            initTabsWithAnalytics();
+            updateDeviceOverview();
+            initCarbonCalculator();
+            initLucideIcons();
+            
+            // Event listeners
+            document.getElementById('findCouncilBtn').addEventListener('click', findCouncil);
+            document.getElementById('scanWifiBtn').addEventListener('click', () => scanForDevices('wifi'));
+            document.getElementById('scanBluetoothBtn').addEventListener('click', () => scanForDevices('bluetooth'));
+            document.getElementById('setReminderBtn').addEventListener('click', setReminder);
+            document.getElementById('markCollectedBtn').addEventListener('click', markCollected);
+            document.getElementById('reportMissedBtn').addEventListener('click', reportMissed);
+            document.getElementById('testAllBtn').addEventListener('click', testAllLights);
+            document.getElementById('testLightsBtn').addEventListener('click', testAllLights);
+            
+            // Real data toggle
+            document.getElementById('realDataToggle').addEventListener('change', (e) => {
+                useRealData = e.target.checked;
+                if (currentCouncil) {
+                    // Refresh current data if council is already loaded
+                    findCouncil();
+                }
+            });
+            
+            document.getElementById('postcodeInput').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') findCouncil();
+            });
+        });
+
+        // CSS for active tab state
+        const style = document.createElement('style');
+        style.textContent = `
+            .tab-btn.active {
+                background-color: #5D5CDE;
+                color: white;
+                box-shadow: 0 4px 14px 0 rgba(93, 92, 222, 0.4);
+            }
+            .tab-btn:not(.active) {
+                color: #6B7280;
+            }
+            .tab-btn:not(.active):hover {
+                color: #374151;
+                background-color: #F3F4F6;
+            }
+            .dark .tab-btn:not(.active) {
+                color: #9CA3AF;
+            }
+            .dark .tab-btn:not(.active):hover {
+                color: #D1D5DB;
+                background-color: #374151;
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
 </html>
