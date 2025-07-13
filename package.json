@@ -1,0 +1,19 @@
+{
+  "name": "binbuddy-uk",
+  "version": "1.0.0",
+  "description": "Smart bin collection reminders for UK households",
+  "main": "index.html",
+  "scripts": {
+    "dev": "vercel dev",
+    "build": "echo 'No build needed'",
+    "deploy": "vercel --prod"
+  },
+  "keywords": ["bins", "uk", "collection", "waste", "reminder", "pwa", "smart", "calendar", "bluetooth"],
+  "author": "Your Name",
+  "license": "MIT",
+  "dependencies": {
+    "node-fetch": "^3.3.2",
+    "rss-parser": "^3.12.0"
+  },
+  "type": "module"
+}
